@@ -1,0 +1,354 @@
+(server-start)
+
+;; paths:
+(add-to-list 'load-path "~/emacs")
+(add-to-list 'load-path "~/emacs/color-theme-6.6.0")
+;(add-to-list 'load-path "~/emacs/ahg")
+(add-to-list 'load-path "~/emacs/magit")
+
+;;;;
+;;;; Look and feel:
+;;;;
+
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(setq initial-frame-alist (append
+                           '((width . 210) (height . 71) (top . 0)
+                             (left . 0))
+                           initial-frame-alist))
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
+ '(current-language-environment "UTF-8")
+ '(custom-buffer-done-kill t)
+ '(global-font-lock-mode t)
+ '(inhibit-startup-screen t)
+ '(initial-scratch-message nil)
+ '(menu-bar-mode nil)
+ '(mouse-wheel-progressive-speed nil)
+ '(scalable-fonts-allowed t)
+ '(scroll-bar-mode nil)
+ '(show-paren-mode t)
+ '(tool-bar-mode nil)
+ '(transient-mark-mode t)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ '(use-dialog-box nil)
+ '(whitespace-style (quote (spaces trailing lines space-before-tab::space newline indentation::space empty space-after-tab::space space-mark tab-mark newline-mark))))
+
+
+(defun switch-indent-tabs ()
+  (interactive)
+  (setq whitespace-style (quote (spaces trailing lines space-before-tab::tab newline indentation::tab
+										empty space-after-tab::tab space-mark tab-mark newline-mark)))
+  (setq indent-tabs-mode t)
+  (setq my-tab-mode 'tabs))
+
+(defun switch-indent-spaces ()
+  (interactive)
+  
+  (setq whitespace-style (quote (spaces trailing lines space-before-tab::space newline indentation::space
+										empty space-after-tab::space space-mark tab-mark newline-mark)))
+  (setq indent-tabs-mode nil)
+  (setq my-tab-mode 'spaces))
+
+(defun switch-indent-2 ()
+  (interactive)
+  (setq c-basic-offset 2)
+  (message "indenting by 2"))
+
+(defun switch-indent-4 ()
+  (interactive)
+  (setq c-basic-offset 4)
+  (message "indenting by 4"))
+
+(desktop-save-mode t)
+(setq-default desktop-path '("~/emacs/desktop/"))
+(setq history-length 250)
+(add-to-list 'desktop-globals-to-save 'file-name-history)
+(setq-default desktop-save t)
+(setq-default save-place t)
+(setq-default desktop-missing-file-warning nil)
+
+;(when window-system
+;  (set-frame-font "Consolas-8"))
+
+(when window-system
+  (set-frame-font "Ubuntu Mono-9"))
+
+(require 'color-theme)
+(require 'my-theme)
+(require 'vline)
+(require 'protobuf-mode)
+
+;; resizing
+(defun resize-v- ()
+  (interactive)
+  (shrink-window 1))
+(defun resize-h- ()
+  (interactive)
+  (shrink-window 1 t))
+(defun resize-v+ ()
+  (interactive)
+  (enlarge-window 1))
+(defun resize-h+ ()
+  (interactive)
+  (enlarge-window 1 t))
+
+;; keys:
+(defun smart-beginning-of-line ()
+  (interactive)
+  (let ((oldpos (point)))
+    (back-to-indentation)
+    (and (= oldpos (point))
+         (beginning-of-line))))
+
+(defun my-buffer-file-name ()
+  (interactive)
+  (message (buffer-file-name)))
+
+(defun autocompile ()
+  "compile emacs config on buffer save"
+  (interactive)
+  (require 'bytecomp)
+  (if (string= (buffer-file-name) (expand-file-name (concat
+													 default-directory ".emacs")))
+      (byte-compile-file (buffer-file-name))))
+(add-hook 'after-save-hook 'autocompile)
+
+(global-set-key [home] 'smart-beginning-of-line)
+(global-set-key "\C-x\C-l" 'goto-line)
+(global-set-key "\C-c\C-f" 'my-buffer-file-name)
+(global-set-key "\C-c\C-r" 'revert-buffer)
+(global-set-key "\C-cw" 'whitespace-cleanup)
+(global-set-key "\C-cr" 'replace-string)
+(global-set-key "\C-cu" 'uncomment-region)
+(global-set-key "\C-cc" 'vline-mode)
+(global-set-key "\C-cis" 'switch-indent-spaces)
+(global-set-key "\C-cit" 'switch-indent-tabs)
+(global-set-key "\C-ci2" 'switch-indent-2)
+(global-set-key "\C-ci4" 'switch-indent-4)
+(global-set-key "\C-m" 'newline-and-indent)
+(global-set-key "\C-cg" 'rgrep)
+(global-set-key [(control z)] 'undo)
+(global-set-key [(shift left)] 'windmove-left)
+(global-set-key [(shift right)] 'windmove-right)
+(global-set-key [(shift up)] 'windmove-up)
+(global-set-key [(shift down)] 'windmove-down)
+(global-set-key (kbd "<C-next>") 'end-of-buffer)
+(global-set-key (kbd "<C-right>") 'resize-h+)
+(global-set-key (kbd "<C-left>") 'resize-h-)
+(global-set-key (kbd "<C-up>") 'resize-v+)
+(global-set-key (kbd "<C-down>") 'resize-v-)
+
+(require 'etags-select)
+
+(global-set-key [(control .)] 'etags-select-find-tag-at-point)
+(global-set-key [(control ,)] 'pop-tag-mark)
+(global-set-key [(control >)] 'etags-select-find-tag)
+
+(add-hook 'etags-select-mode-hook
+          (lambda ()
+            (local-set-key [(control ,)] 'etags-select-quit)))
+
+;; abbrevs
+(abbrev-mode 1)
+(setq default-abbrev-mode t)
+(setq abbrev-file-name "~/emacs/abbrev_defs")
+(setq save-abbrevs t)
+
+;;;;
+;;;; Load and configure needed modules:
+;;;;
+
+(require 'browse-kill-ring)
+(global-set-key "\C-cy" '(lambda ()
+                           (interactive)
+                           (popup-menu 'yank-menu)))
+
+(ido-mode t)
+
+;; uniquify
+
+(require 'uniquify)
+
+;; iswitchb
+(require 'iswitchb)
+(iswitchb-mode 1)
+(setq iswitchb-buffer-ignore
+      '("^\\*GTAG" "^*Complet" "*Minibuf"))
+
+(defun iswitchb-local-keys ()
+  (mapc (lambda (K)
+          (let* ((key (car K)) (fun (cdr K)))
+            (define-key iswitchb-mode-map (edmacro-parse-keys key) fun)))
+        '(("<right>" . iswitchb-next-match)
+          ("<left>"  . iswitchb-prev-match)
+          ("<up>"    . ignore             )
+          ("<down>"  . ignore             ))))
+
+(setq compilation-scroll-output t)
+
+(add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
+
+(setq default-tab-width 4)
+
+(defconst my-c++-style
+  '((c-basic-offset . 2)
+    (c-comment-only-line-offset 0 . 0)
+    (c-hanging-braces-alist
+     (substatement-open before after)
+     (arglist-cont-nonempty))
+    (c-offsets-alist
+     (statement-block-intro . +)
+     (knr-argdecl-intro . 5)
+     (substatement-open . +)
+     (substatement-label . 0)
+     (label . 0)
+     (statement-case-open . +)
+     (statement-cont . +)
+     (arglist-intro . +)
+     (arglist-close . 0)
+     (inline-open . 0)
+     (brace-list-open . +)
+     (topmost-intro-cont first c-lineup-topmost-intro-cont c-lineup-gnu-DEFUN-intro-cont))
+    (c-special-indent-hook . c-gnu-impose-minimum)
+    (c-block-comment-prefix . "")))
+
+(c-add-style "my-c++-style" my-c++-style)
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (c-set-style "gnu")
+            (c-set-style "my-c++-style")
+            (switch-indent-spaces)
+            (auto-fill-mode)
+			(setq fill-column 100)))
+
+(defvar autosave-dir "~/tmp/emacs_backups")
+
+(make-directory autosave-dir t)
+
+(defun auto-save-file-name-p (filename)
+  (string-match "^#.*#$" (file-name-nondirectory filename)))
+
+;; Places #ifdef guards in an include file
+(defun replace-in-string (string regexp newtext)
+  (let ((skip (length newtext))
+	(start 0))
+    (while (string-match regexp string start)
+      (setq string (replace-match newtext t t string)
+	    start (+ skip (match-beginning 0)))))
+  string)
+
+
+(defun nb-include-guard ()
+  (interactive "")
+  (goto-char 1)
+  (let* ((inc-name (replace-in-string (buffer-name (current-buffer)) "\\." "_" ) )
+	 (ftag (concat "__"
+		       (upcase inc-name )
+		       "__" )))
+    (insert (concat "#ifndef " ftag))
+    (newline)
+    (insert (concat "#define " ftag))
+    (newline)
+    (newline)
+    (end-of-buffer)
+    (insert "#endif")
+    (newline)))
+
+(global-set-key "\C-cpi" 'nb-include-guard)
+
+(defun make-auto-save-file-name ()
+  (concat
+   autosave-dir
+   "/"
+   (if buffer-file-name
+       (concat "#" (file-name-nondirectory buffer-file-name) "#")
+     (expand-file-name
+      (concat "#%" (buffer-name) "#")))))
+
+(setq backup-directory-alist (list (cons "." autosave-dir)))
+
+(which-func-mode)
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:inherit diff-changed :foreground "green"))))
+ '(diff-indicator-added ((t (:inherit diff-added :foreground "green"))))
+ '(diff-removed ((t (:inherit diff-changed :foreground "red"))))
+ '(font-lock-function-name-face ((t (:foreground "DodgerBlue" :weight bold))))
+ '(font-lock-keyword-face ((t (:foreground "LightPink"))))
+ '(font-lock-type-face ((t (:foreground "yellow"))))
+ '(font-lock-warning-face ((t (:foreground "Red" :weight bold)))))
+
+(global-unset-key "\C-x\C-z")
+
+(add-hook 'c-mode-common-hook
+		  (lambda ()
+			(font-lock-add-keywords
+			 nil
+			 '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))
+			(local-set-key (kbd "C-c o") '(lambda ()
+											 (interactive)
+											 (ff-find-other-file nil t)))
+			(local-set-key (kbd "<M-RET>") 'ac-complete-gccsense)))
+
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/emacs//ac-dict")
+
+(ac-config-default)
+(setq ac-auto-show-menu nil)
+(setq ac-auto-start nil)
+
+(require 'magit)
+
+(defun git-status-current ()
+  (interactive)
+  (magit-status default-directory))
+
+(global-set-key "\C-xg" 'git-status-current) 
+
+(setq my-c-headers-exts '(".h" ".hh" ".hpp"))
+(setq my-c-source-exts '(".cpp" ".c" ".cxx"))
+
+(setq cc-other-file-alist
+      (list
+	   (list "\\.cpp\\'" my-c-headers-exts)
+	   (list "\\.cxx\\'" my-c-headers-exts)
+	   
+	   (list "\\.h\\'" my-c-source-exts)
+	   (list "\\.hh\\'" my-c-source-exts)
+	   (list "\\.hpp\\'" my-c-source-exts)
+	   ))
+			
+(add-hook 'lua-mode-hook (lambda ()
+						   (setq lua-indent-level 4)
+						   (local-set-key "\C-c\C-f" 'my-buffer-file-name)))
+
+(add-to-list 'auto-mode-alist '("\\.ds\\'" . lua-mode))
+(add-to-list 'auto-mode-alist '("\\.proto\\'" . protobuf-mode))
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "chromium-browser")
+
+;; enable pretty-lambda
+;;(setq haskell-font-lock-symbols t)
+
+(require 'hs-lint)
+
+(defun my-haskell-mode-hook ()
+   (local-set-key "\C-cl" 'hs-lint)
+   (local-set-key "\C-hh" 'haskell-hoogle)
+   (font-lock-add-keywords
+			 nil
+			 '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t))))
+
+(add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+(put 'upcase-region 'disabled nil)
