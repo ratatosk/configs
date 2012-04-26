@@ -1,8 +1,80 @@
+(server-start)
+
+;; paths:
+(add-to-list 'load-path "~/emacs")
+(add-to-list 'load-path "~/emacs/color-theme-6.6.0")
+;(add-to-list 'load-path "~/emacs/ahg")
+(add-to-list 'load-path "~/emacs/magit")
+
+;;;;
+;;;; Look and feel:
+;;;;
+(setq confirm-kill-emacs 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(setq initial-frame-alist (append
+                           '((width . 210) (height . 71) (top . 0)
+                             (left . 0))
+                           initial-frame-alist))
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
+ '(current-language-environment "UTF-8")
+ '(custom-buffer-done-kill t)
+ '(global-font-lock-mode t)
+ '(inhibit-startup-screen t)
+ '(initial-scratch-message nil)
+ '(menu-bar-mode nil)
+ '(mouse-wheel-progressive-speed nil)
+ '(scalable-fonts-allowed t)
+ '(scroll-bar-mode nil)
+ '(show-paren-mode t)
+ '(tool-bar-mode nil)
+ '(transient-mark-mode t)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ '(use-dialog-box nil)
+ '(whitespace-style (quote (spaces trailing lines space-before-tab::space newline indentation::space empty space-after-tab::space space-mark tab-mark newline-mark))))
+
+
+(defun switch-indent-tabs ()
+  (interactive)
+  (setq whitespace-style (quote (spaces trailing lines space-before-tab::tab newline indentation::tab
+										empty space-after-tab::tab space-mark tab-mark newline-mark)))
+  (setq indent-tabs-mode t)
+  (setq my-tab-mode 'tabs))
+
+(defun switch-indent-spaces ()
+  (interactive)
+  
+  (setq whitespace-style (quote (spaces trailing lines space-before-tab::space newline indentation::space
+										empty space-after-tab::space space-mark tab-mark newline-mark)))
+  (setq indent-tabs-mode nil)
+  (setq my-tab-mode 'spaces))
+
+(defun switch-indent-2 ()
+  (interactive)
+  (setq c-basic-offset 2)
+  (message "indenting by 2"))
+
+(defun switch-indent-4 ()
+  (interactive)
+  (setq c-basic-offset 4)
+  (message "indenting by 4"))
+
+(desktop-save-mode t)
+(setq-default desktop-path '("~/emacs/desktop/"))
 (setq history-length 250)
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq-default desktop-save t)
 (setq-default save-place t)
 (setq-default desktop-missing-file-warning nil)
+
+;(when window-system
+; (set-frame-font "Consolas-8"))
 
 (when window-system
   (set-frame-font "Ubuntu Mono-9"))
@@ -268,7 +340,7 @@
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "chromium-browser")
 
-;; enable pretty-lambda -- disabled, ugly look with current font
+;; enable pretty-lambda
 ;;(setq haskell-font-lock-symbols t)
 
 (defun align-haddock ()
