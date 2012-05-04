@@ -334,8 +334,15 @@
 						   (setq lua-indent-level 4)
 						   (local-set-key "\C-c\C-f" 'my-buffer-file-name)))
 
-(add-to-list 'auto-mode-alist '("\\.ds\\'" . lua-mode))
-(add-to-list 'auto-mode-alist '("\\.proto\\'" . protobuf-mode))
+(defun assoc-extension (mask mode)
+  (assq-delete-all mask auto-mode-alist)
+  (setq auto-mode-alist (cons (cons mask mode) auto-mode-alist)))
+
+(assoc-extension "\\.ds\\'" 'lua-mode)
+(assoc-extension "\.hs\\'" 'haskell-mode)
+(assoc-extension "\.lhs\\'" 'haskell-mode)
+(assoc-extension "\.m\\'" 'octave-mode)
+(assoc-extension "\\.proto\\'" 'protobuf-mode)
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "chromium-browser")
