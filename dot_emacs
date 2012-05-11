@@ -222,14 +222,6 @@
 
 (c-add-style "my-c++-style" my-c++-style)
 
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (c-set-style "gnu")
-            (c-set-style "my-c++-style")
-            (switch-indent-spaces)
-            (auto-fill-mode)
-			(setq fill-column 100)))
-
 (defvar autosave-dir "~/tmp/emacs_backups")
 
 (make-directory autosave-dir t)
@@ -292,11 +284,24 @@
 
 (global-unset-key "\C-x\C-z")
 
+;; Boost.MSM transition table aligner
+(defun align-msm-tt ()
+  "Align multiline Haskell function type signature with Haddock markup"
+  (interactive)
+  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\), " 1 1 t)
+  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)>" 1 1 nil))
+
 (add-hook 'c-mode-common-hook
 		  (lambda ()
+			(c-set-style "gnu")
+            (c-set-style "my-c++-style")
+            (switch-indent-spaces)
+            (auto-fill-mode)
+			(setq fill-column 100)
 			(font-lock-add-keywords
 			 nil
 			 '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))
+			(local-set-key "\C-cam" 'align-msm-tt)
 			(local-set-key (kbd "C-c o") '(lambda ()
 											 (interactive)
 											 (ff-find-other-file nil t)))
@@ -357,13 +362,12 @@
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\) -- " 1 0 nil)
   )
 
-
 (require 'hs-lint)
 
 (defun my-haskell-mode-hook ()
    (local-set-key "\C-cl" 'hs-lint)
    (local-set-key "\C-hh" 'haskell-hoogle)
-   (local-set-key "\C-x\C-h" 'align-haddock)
+   (local-set-key "\C-cah" 'align-haddock)
    (turn-on-haskell-indentation)
    (font-lock-mode)
    (switch-indent-spaces)
