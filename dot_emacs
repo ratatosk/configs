@@ -344,9 +344,9 @@
   (setq auto-mode-alist (cons (cons mask mode) auto-mode-alist)))
 
 (assoc-extension "\\.ds\\'" 'lua-mode)
-(assoc-extension "\.hs\\'" 'haskell-mode)
-(assoc-extension "\.lhs\\'" 'haskell-mode)
-(assoc-extension "\.m\\'" 'octave-mode)
+(assoc-extension "\\.hs\\'" 'haskell-mode)
+(assoc-extension "\\.lhs\\'" 'haskell-mode)
+(assoc-extension "\\.m\\'" 'octave-mode)
 (assoc-extension "\\.proto\\'" 'protobuf-mode)
 
 (setq browse-url-browser-function 'browse-url-generic
