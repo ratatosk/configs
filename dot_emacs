@@ -2,7 +2,6 @@
 
 ;; paths:
 (add-to-list 'load-path "~/emacs")
-(add-to-list 'load-path "~/emacs/color-theme-6.6.0")
 ;(add-to-list 'load-path "~/emacs/ahg")
 (add-to-list 'load-path "~/emacs/magit")
 
@@ -10,6 +9,7 @@
 ;;;; Look and feel:
 ;;;;
 (setq confirm-kill-emacs 'y-or-n-p)
+(load-theme 'tango-dark)
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (setq initial-frame-alist (append
@@ -65,6 +65,11 @@
   (setq c-basic-offset 4)
   (message "indenting by 4"))
 
+(defun switch-indent-8 ()
+  (interactive)
+  (setq c-basic-offset 8)
+  (message "indenting by 8"))
+
 (desktop-save-mode t)
 (setq-default desktop-path '("~/emacs/desktop/"))
 (setq history-length 250)
@@ -79,8 +84,6 @@
 (when window-system
   (set-frame-font "Ubuntu Mono-9"))
 
-(require 'color-theme)
-(require 'my-theme)
 (require 'vline)
 (require 'protobuf-mode)
 
@@ -115,7 +118,7 @@
   (interactive)
   (require 'bytecomp)
   (if (string= (buffer-file-name) (expand-file-name (concat
-													 default-directory ".emacs")))
+						     default-directory ".emacs")))
       (byte-compile-file (buffer-file-name))))
 (add-hook 'after-save-hook 'autocompile)
 
@@ -133,6 +136,7 @@
 (global-set-key "\C-cit" 'switch-indent-tabs)
 (global-set-key "\C-ci2" 'switch-indent-2)
 (global-set-key "\C-ci4" 'switch-indent-4)
+(global-set-key "\C-ci8" 'switch-indent-8)
 (global-set-key "\C-m" 'newline-and-indent)
 (global-set-key "\C-cg" 'rgrep)
 (global-set-key [(control z)] 'undo)
@@ -149,12 +153,12 @@
 (require 'etags-select)
 
 (global-set-key [(control .)] 'etags-select-find-tag-at-point)
-(global-set-key [(control ,)] 'pop-tag-mark)
+(global-set-key [(control \,)] 'pop-tag-mark)
 (global-set-key [(control >)] 'etags-select-find-tag)
 
 (add-hook 'etags-select-mode-hook
           (lambda ()
-            (local-set-key [(control ,)] 'etags-select-quit)))
+            (local-set-key [(control \,)] 'etags-select-quit)))
 
 ;; abbrevs
 (abbrev-mode 1)
@@ -196,7 +200,7 @@
 
 (add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
 
-(setq default-tab-width 4)
+(setq default-tab-width 8)
 
 (defconst my-c++-style
   '((c-basic-offset . 2)
@@ -353,7 +357,7 @@
       browse-url-generic-program "chromium-browser")
 
 ;; enable pretty-lambda
-;;(setq haskell-font-lock-symbols t)
+(setq haskell-font-lock-symbols t)
 
 (defun align-haddock ()
   "Align multiline Haskell function type signature with Haddock markup"
