@@ -2,7 +2,6 @@
 
 ;; paths:
 (add-to-list 'load-path "~/emacs")
-;(add-to-list 'load-path "~/emacs/ahg")
 (add-to-list 'load-path "~/emacs/magit")
 
 ;;;;
@@ -81,10 +80,9 @@
 ;(when window-system
 ; (set-frame-font "Consolas-8"))
 
-(when window-system
-  (set-frame-font "Ubuntu Mono-9"))
+;(when window-system
+;  (set-frame-font "Ubuntu Mono-9"))
 
-(require 'vline)
 (require 'protobuf-mode)
 
 ;; resizing
@@ -131,7 +129,7 @@
 (global-set-key "\C-cw" 'whitespace-cleanup)
 (global-set-key "\C-cr" 'replace-string)
 (global-set-key "\C-cu" 'uncomment-region)
-(global-set-key "\C-cc" 'vline-mode)
+(global-set-key "\C-cc" 'comment-region)
 (global-set-key "\C-cis" 'switch-indent-spaces)
 (global-set-key "\C-cit" 'switch-indent-tabs)
 (global-set-key "\C-ci2" 'switch-indent-2)
@@ -162,7 +160,6 @@
 
 ;; abbrevs
 (abbrev-mode 1)
-(setq default-abbrev-mode t)
 (setq abbrev-file-name "~/emacs/abbrev_defs")
 (setq save-abbrevs t)
 
@@ -200,7 +197,7 @@
 
 (add-hook 'iswitchb-define-mode-map-hook 'iswitchb-local-keys)
 
-(setq default-tab-width 8)
+(setq tab-width 8)
 
 (defconst my-c++-style
   '((c-basic-offset . 2)
@@ -272,7 +269,7 @@
 
 (setq backup-directory-alist (list (cons "." autosave-dir)))
 
-(which-func-mode)
+(which-function-mode)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -288,9 +285,8 @@
 
 (global-unset-key "\C-x\C-z")
 
-;; Boost.MSM transition table aligner
 (defun align-msm-tt ()
-  "Align multiline Haskell function type signature with Haddock markup"
+  "Align boost msm transition table"
   (interactive)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\), " 1 1 t)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)>" 1 1 nil))
@@ -311,12 +307,24 @@
 											 (ff-find-other-file nil t)))
 			(local-set-key (kbd "<M-RET>") 'ac-complete-gccsense)))
 
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/emacs//ac-dict")
 
-(ac-config-default)
-(setq ac-auto-show-menu nil)
-(setq ac-auto-start nil)
+(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+;(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-show-unmatched-syntax-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-highlight-edits-mode)
+;;(add-to-list 'semantic-default-submodes 'global-semantic-show-parser-state-mode)
+
+;; Activate semantic
+(semantic-mode 1)
+
+(require 'semantic/ia)
+
+(require 'semantic/bovine/gcc)
 
 (require 'magit)
 
@@ -333,15 +341,11 @@
       (list
 	   (list "\\.cpp\\'" my-c-headers-exts)
 	   (list "\\.cxx\\'" my-c-headers-exts)
-	   
+
 	   (list "\\.h\\'" my-c-source-exts)
 	   (list "\\.hh\\'" my-c-source-exts)
 	   (list "\\.hpp\\'" my-c-source-exts)
 	   ))
-			
-(add-hook 'lua-mode-hook (lambda ()
-						   (setq lua-indent-level 4)
-						   (local-set-key "\C-c\C-f" 'my-buffer-file-name)))
 
 (defun assoc-extension (mask mode)
   (assq-delete-all mask auto-mode-alist)
@@ -365,8 +369,6 @@
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\) \\(::\\|->\\) " 1 0 nil)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\) -- " 1 0 nil)
   )
-
-(require 'hs-lint)
 
 (defun my-haskell-mode-hook ()
    (local-set-key "\C-cl" 'hs-lint)
