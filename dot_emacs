@@ -183,7 +183,7 @@
 (iswitchb-mode 1)
 (setq iswitchb-buffer-ignore
       '("^\\*GTAG" "^*Complet" "*Minibuf"))
-
+(require 'edmacro)
 (defun iswitchb-local-keys ()
   (mapc (lambda (K)
           (let* ((key (car K)) (fun (cdr K)))
