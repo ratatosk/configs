@@ -2,4 +2,5 @@ URxvt*foreground: White
 URxvt*background: Black
 URxvt*scrollBar: false
 URxvt*perl-ext-common:
-URxvt*scrollTtyOutput: false
+URxvt*scrollTtyOutput:false
+URxvt*scrollWithBuffer:true
