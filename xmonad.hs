@@ -38,61 +38,64 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((mod4Mask, xK_Return), spawn $ XMonad.terminal conf)
  
     -- launch "run application"
-    , ((mod4Mask, xK_r     ), spawn "gmrun")
+    , ((mod4Mask, xK_r ), spawn "gmrun")
  
     -- launch emacs
-    , ((mod4Mask, xK_e     ), spawn "emacs")
+    , ((mod4Mask, xK_e), spawn "emacs")
 
     -- launch browser
-    , ((mod4Mask, xK_f     ), spawn "google-chrome")
+    , ((mod4Mask, xK_f), spawn "google-chrome")
     
     -- launch mail
-    , ((mod4Mask, xK_m     ), spawn "claws-mail")
+    , ((mod4Mask, xK_m), spawn "claws-mail")
 
     -- launch banshee
-    , ((mod4Mask, xK_b     ), spawn "pragha")
+    , ((mod4Mask, xK_b), spawn "pragha")
 
     -- launch pidgin
-    , ((mod4Mask, xK_g     ), spawn "pidgin")
+    , ((mod4Mask, xK_g), spawn "pidgin")
  
     -- close focused window 
-    , ((mod4Mask, xK_c     ), kill)
+    , ((mod4Mask, xK_c), kill)
     
     -- close focused window 
-    , ((mod4Mask, xK_k     ), spawn "xkill")
+    , ((mod4Mask, xK_k), spawn "xkill")
 
     -- Restart xmonad
-    , ((mod4Mask              , xK_q     ), spawn "xmonad --recompile && xmonad --restart")
+    , ((mod4Mask, xK_q), spawn "xmonad --recompile && xmonad --restart")
  
     -- Rotate through the available layout algorithms
-    , ((mod4Mask,               xK_space ), sendMessage NextLayout)
+    , ((mod4Mask, xK_space), sendMessage NextLayout)
  
     -- Resize viewed windows to the correct size
-    , ((mod4Mask,               xK_n     ), refresh)
+    , ((mod4Mask, xK_n), refresh)
 
     -- Move focus to the next window
-    , ((mod4Mask,                xK_Tab   ), windows W.focusDown)
+    , ((mod4Mask, xK_Tab), windows W.focusDown)
  
     -- Swap the focused window and the master window
-    , ((mod4Mask,               xK_BackSpace), windows W.swapMaster)
+    , ((mod4Mask, xK_BackSpace), windows W.swapMaster)
  
     -- Shrink the master area
-    , ((mod4Mask,               xK_Left     ), sendMessage Shrink)
+    , ((mod4Mask, xK_Left), sendMessage Shrink)
  
     -- Expand the master area
-    , ((mod4Mask,               xK_Right     ), sendMessage Expand)
+    , ((mod4Mask, xK_Right), sendMessage Expand)
  
     -- Push window back into tiling
-    , ((mod4Mask,               xK_Home     ), withFocused $ windows . W.sink)
+    , ((mod4Mask, xK_Home), withFocused $ windows . W.sink)
  
     -- Increment the number of windows in the master area
-    , ((mod4Mask              , xK_Up ), sendMessage (IncMasterN 1))
+    , ((mod4Mask, xK_Up), sendMessage (IncMasterN 1))
  
     -- Deincrement the number of windows in the master area
-    , ((mod4Mask              , xK_Down), sendMessage (IncMasterN (-1)))
+    , ((mod4Mask, xK_Down), sendMessage (IncMasterN (-1)))
 
     -- Cycle through xinerama screens
-    , ((mod4Mask              , xK_quoteleft), nextScreen)
+    , ((mod4Mask, xK_quoteleft), nextScreen)
+
+    -- Cycle through xinerama screens
+    , ((mod4Mask .|. shiftMask , xK_quoteleft), swapNextScreen)
 
     ]
     ++
