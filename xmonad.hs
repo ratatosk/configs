@@ -3,6 +3,7 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Config.Xfce
+import XMonad.Actions.CycleWS
 
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ManageDocks
@@ -89,6 +90,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
  
     -- Deincrement the number of windows in the master area
     , ((mod4Mask              , xK_Down), sendMessage (IncMasterN (-1)))
+
+    -- Cycle through xinerama screens
+    , ((mod4Mask              , xK_quoteleft), nextScreen)
+
     ]
     ++
  
@@ -99,12 +104,3 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [((m .|. mod4Mask, k), windows $ f i)
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-    ++
-
-    --
-    -- mod-{'.',','}, Switch to physical/Xinerama screens 1, 2
-    -- mod-shift-{'.',','}, Move client to screen 1, 2
-    --
-    [((m .|. mod4Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- [(xK_comma, 1), (xK_period, 0)]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
