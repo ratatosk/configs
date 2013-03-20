@@ -7,6 +7,7 @@ import XMonad.Config.Xfce
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.SetWMName
 
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
@@ -21,7 +22,7 @@ myXfceConfig = xfceConfig
     , normalBorderColor  = "#222222"
     , focusedBorderColor = "#444444"
     , handleEventHook    = ewmhDesktopsEventHook
-    , startupHook        = ewmhDesktopsStartup               
+    , startupHook        = ewmhDesktopsStartup <+> setWMName "LG3D"
     , workspaces         = myWorkspaces
     , manageHook         = myManageHook <+> manageHook xfceConfig
     }
@@ -42,26 +43,32 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((mod4Mask, xK_e     ), spawn "emacs")
 
     -- launch browser
-    , ((mod4Mask, xK_f     ), spawn "chromium-browser")
+    , ((mod4Mask, xK_f     ), spawn "google-chrome")
     
     -- launch mail
-    , ((mod4Mask, xK_m     ), spawn "thunderbird")
+    , ((mod4Mask, xK_m     ), spawn "claws-mail")
 
     -- launch banshee
-    , ((mod4Mask, xK_b     ), spawn "gmusicbrowser")
+    , ((mod4Mask, xK_b     ), spawn "pragha")
 
     -- launch pidgin
     , ((mod4Mask, xK_g     ), spawn "pidgin")
  
     -- close focused window 
     , ((mod4Mask, xK_c     ), kill)
+    
+    -- close focused window 
+    , ((mod4Mask, xK_k     ), spawn "xkill")
+
+    -- Restart xmonad
+    , ((mod4Mask              , xK_q     ), spawn "xmonad --recompile && xmonad --restart")
  
     -- Rotate through the available layout algorithms
     , ((mod4Mask,               xK_space ), sendMessage NextLayout)
  
     -- Resize viewed windows to the correct size
     , ((mod4Mask,               xK_n     ), refresh)
- 
+
     -- Move focus to the next window
     , ((mod4Mask,                xK_Tab   ), windows W.focusDown)
  
@@ -82,9 +89,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
  
     -- Deincrement the number of windows in the master area
     , ((mod4Mask              , xK_Down), sendMessage (IncMasterN (-1)))
- 
-    -- toggle the status bar gap
-    -- TODO, update this binding with avoidStruts , ((mod4Mask              , xK_b     ),
     ]
     ++
  
@@ -95,3 +99,12 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [((m .|. mod4Mask, k), windows $ f i)
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+    ++
+
+    --
+    -- mod-{'.',','}, Switch to physical/Xinerama screens 1, 2
+    -- mod-shift-{'.',','}, Move client to screen 1, 2
+    --
+    [((m .|. mod4Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
+        | (key, sc) <- [(xK_comma, 1), (xK_period, 0)]
+        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
