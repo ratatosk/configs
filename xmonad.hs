@@ -29,7 +29,7 @@ myXfceConfig = xfceConfig
     }
 
 myManageHook = composeAll [
-                           isFullscreen --> doFloat
+                           isFullscreen --> doFullFloat
                           ]
 
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
