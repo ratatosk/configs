@@ -22,15 +22,17 @@ myXfceConfig = xfceConfig
     , keys               = myKeys
     , normalBorderColor  = "#222222"
     , focusedBorderColor = "#444444"
-    , handleEventHook    = ewmhDesktopsEventHook
+    --, handleEventHook    = ewmhDesktopsEventHook
     , startupHook        = ewmhDesktopsStartup <+> setWMName "LG3D"
     , workspaces         = myWorkspaces
     , manageHook         = myManageHook <+> manageHook xfceConfig
+    , handleEventHook    = fullscreenEventHook
     }
 
-myManageHook = composeAll [
-                           isFullscreen --> doFullFloat
-                          ]
+myManageHook = composeAll $
+               [ isFullscreen --> doFullFloat
+               , className =? "Xfce4-panel" --> doIgnore
+               ]
 
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
  
